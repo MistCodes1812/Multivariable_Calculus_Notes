@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Week 3 — Recursion</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="notes.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Week 3 — Recursion</h1>
+</header>
+<h1 id="week-3-recursion">Week 3: Recursion</h1>
+<p>Some intro prose that sits outside any typed block, just plain page
+content.</p>
+<div id="pre-reading-d3b912a0" class="block pre-reading" role="note"
+aria-label="Pre-Reading">
+<div class="block__label">
+Pre-Reading
+</div>
+<p>Before class, skim chapter 4 of the course text on stack frames. You
+don’t need to understand tail-call optimization yet — we’ll build that
+up together.</p>
+</div>
+<div id="course-material-base-cases-and-recursive-cases"
+class="block course-material" role="note" aria-label="Course Material">
+<div class="block__label">
+Course Material
+</div>
+<h2 id="base-cases-and-recursive-cases">Base cases and recursive
+cases</h2>
+<p>Every recursive function needs a base case that terminates the
+recursion and a recursive case that makes progress toward it. Forgetting
+the base case is the single most common cause of a stack overflow in
+student code.</p>
+</div>
+<div class="slot-container" id="slot-recursion-visually" data-slot-type="video" data-src="https://example.com/embed/recursion-intro" data-auto="true">
+  <div class="slot-placeholder">
+    <span class="slot-placeholder__label">Video &middot; Recursion, visually</span>
+    <button class="slot-placeholder__button" type="button"
+      onclick="window.__loadSlot(this.closest('.slot-container'))">
+      Load video
+    </button>
+  </div>
+  <noscript>
+    <p class="slot-fallback"><a href="https://example.com/embed/recursion-intro">Recursion, visually (opens directly -- https://example.com/embed/recursion-intro)</a></p>
+  </noscript>
+</div>
+
+<div id="deep-dive-why-recursion-and-induction-are-the-same-idea"
+class="block deep-dive" role="note" aria-label="Deep Dive">
+<div class="block__label">
+Deep Dive
+</div>
+<h2 id="why-recursion-and-induction-are-the-same-idea">Why recursion and
+induction are the same idea</h2>
+<p>If you’ve done proof by induction, recursive functions should feel
+familiar: the base case matches your base case, and the recursive step
+matches your inductive step. This isn’t a coincidence — it’s the same
+logical structure applied to computation instead of proof.</p>
+</div>
+<div class="slot-container" id="slot-call-stack-simulator" data-slot-type="interactive" data-src="https://example.com/embed/call-stack-sim" data-auto="true">
+  <div class="slot-placeholder">
+    <span class="slot-placeholder__label">Interactive &middot; Call stack simulator</span>
+    <button class="slot-placeholder__button" type="button"
+      onclick="window.__loadSlot(this.closest('.slot-container'))">
+      Load interactive content
+    </button>
+  </div>
+  <noscript>
+    <p class="slot-fallback"><a href="https://example.com/embed/call-stack-sim">Call stack simulator (opens directly -- https://example.com/embed/call-stack-sim)</a></p>
+  </noscript>
+</div>
+
+<p>More closing prose, again outside any block.</p>
+<script>
+(function () {
+  function loadSlot(container) {
+    if (!container || container.dataset.loaded === "true") return;
+    var src = container.dataset.src;
+    var iframe = document.createElement("iframe");
+    iframe.src = src;
+    iframe.loading = "lazy";
+    iframe.allow = "autoplay; fullscreen";
+    iframe.setAttribute("allowfullscreen", "");
+    container.innerHTML = "";
+    container.appendChild(iframe);
+    container.dataset.loaded = "true";
+  }
+  window.__loadSlot = loadSlot;
+
+  function connectionAllowsAutoLoad() {
+    var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (!c) return false; // API unsupported: unknown quality, stay conservative
+    if (c.saveData) return false; // explicit data-saver request
+    if (c.effectiveType && c.effectiveType.indexOf("4g") === -1) return false; // slow-2g/2g/3g
+    return true;
+  }
+
+  function autoLoadEligibleSlots() {
+    if (!connectionAllowsAutoLoad()) return;
+    var slots = Array.prototype.slice.call(
+      document.querySelectorAll('.slot-container[data-auto="true"]')
+    );
+    slots.forEach(function (container, i) {
+      setTimeout(function () { loadSlot(container); }, i * 600);
+    });
+  }
+
+  function schedule() {
+    if ("requestIdleCallback" in window) {
+      requestIdleCallback(autoLoadEligibleSlots, { timeout: 3000 });
+    } else {
+      setTimeout(autoLoadEligibleSlots, 500);
+    }
+  }
+
+  if (document.readyState === "complete") {
+    schedule();
+  } else {
+    window.addEventListener("load", schedule);
+  }
+})();
+</script>
+</body>
+</html>

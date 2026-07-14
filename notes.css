@@ -1,0 +1,182 @@
+/* ==========================================================================
+   Notes taxonomy — content-type blocks + media/interactive slots
+   ==========================================================================
+   Architecture:
+   - Every typed block gets ONE class from the taxonomy below (mutually
+     exclusive — the Lua filter enforces this at build time).
+   - The filter adds a shared `.block` base class + a label + ARIA metadata,
+     so you only ever author the type class in markdown.
+   - Slots (`.slot-container`) are click-to-load: zero network cost until
+     the reader opts in, so the page is fully readable on a weak connection.
+   ========================================================================== */
+
+:root {
+  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Consolas, monospace;
+
+  --color-text: #1a1a1a;
+  --color-bg: #ffffff;
+  --color-border: #e0e0e0;
+  --color-muted: #6b6b6b;
+
+  /* Per-type accent colors. Add a new pair here when you add a new type —
+     nothing else needs to change. */
+  --color-course-material: #2563eb;
+  --color-course-material-bg: #eff6ff;
+
+  --color-pre-reading: #b45309;
+  --color-pre-reading-bg: #fffbeb;
+
+  --color-deep-dive: #7c3aed;
+  --color-deep-dive-bg: #f5f3ff;
+
+  --radius: 8px;
+  --spacing: 1.25rem;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 6rem;
+}
+
+/* --------------------------------------------------------------------
+   Base block — applied by the filter to every typed div
+   -------------------------------------------------------------------- */
+.block {
+  margin: var(--spacing) 0;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  border-left-width: 4px;
+}
+
+.block > :first-child {
+  margin-top: 0;
+}
+.block > :last-child {
+  margin-bottom: 0;
+}
+
+/* Label injected by the filter (e.g. "Pre-Reading") */
+.block__label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+/* --------------------------------------------------------------------
+   Type modifiers — the taxonomy. Add new types by:
+   1. adding a --color-<type> / --color-<type>-bg pair above
+   2. adding a rule here
+   3. adding the class name to ALLOWED_TYPES in filter.lua
+   -------------------------------------------------------------------- */
+.block.course-material {
+  border-left-color: var(--color-course-material);
+  background: var(--color-course-material-bg);
+}
+.block.course-material .block__label {
+  color: var(--color-course-material);
+}
+
+.block.pre-reading {
+  border-left-color: var(--color-pre-reading);
+  background: var(--color-pre-reading-bg);
+}
+.block.pre-reading .block__label {
+  color: var(--color-pre-reading);
+}
+
+.block.deep-dive {
+  border-left-color: var(--color-deep-dive);
+  background: var(--color-deep-dive-bg);
+}
+.block.deep-dive .block__label {
+  color: var(--color-deep-dive);
+}
+
+/* --------------------------------------------------------------------
+   Slots — video / interactive placeholders
+   Click-to-load: no iframe request fires until the user clicks, so
+   the surrounding prose is fully usable with zero extra network cost.
+   -------------------------------------------------------------------- */
+.slot-container {
+  margin: var(--spacing) 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #000;
+  position: relative;
+  aspect-ratio: 16 / 9; /* reserves layout space before anything loads */
+}
+
+.slot-container[data-slot-type="interactive"] {
+  aspect-ratio: 4 / 3;
+  background: #f4f4f5;
+}
+
+.slot-container iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.slot-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: #fff;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.55));
+  text-align: center;
+  padding: 1rem;
+}
+
+.slot-container[data-slot-type="interactive"] .slot-placeholder {
+  color: var(--color-text);
+  background: none;
+}
+
+.slot-placeholder__button {
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: #fff;
+  color: #111;
+}
+.slot-placeholder__button:hover {
+  background: #f0f0f0;
+}
+
+.slot-placeholder__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+}
+
+/* Plain-link fallback for no-JS / already-loaded state */
+.slot-fallback {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 1.25rem 1rem 4rem;
+  }
+}
